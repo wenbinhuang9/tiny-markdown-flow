@@ -1,16 +1,15 @@
 
-from layout import  LRLayout
-from drawer import drawLRLayout
+from layout import  LRLayout, getLayout
+from drawer import drawLRLayout, draw
 from parser import parse
 
 def interpret(input):
 
     tree = parse(input)
 
-    layout = LRLayout(tree)
+    layout = getLayout(tree)
 
-    drawLRLayout(layout)
+    draw(layout)
 
 if __name__ == "__main__":
-
-    interpret("type LR lexer > parser > layout > draw")
+    interpret("type TD lexer > parser > layout > draw")

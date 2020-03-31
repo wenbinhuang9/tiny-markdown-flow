@@ -52,6 +52,9 @@ class GraphAST():
         self.type = type
         self.child = child
 
+    def get_type(self):
+        return self.type.token
+
     def child(self, child):
         self.child = child
 
@@ -96,6 +99,10 @@ class GraphParser():
     def __init__(self , multext, text):
         self.multext = multext
         self.text = text
+
+    def get_type(self):
+        return self.text.token
+
     def parse(self,lex):
         token = lex.nextToken()
         if token == None or token.value != "type":
