@@ -1,5 +1,5 @@
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 
 from layout import  LRLayout, TopdownLayout
@@ -9,6 +9,9 @@ from layout import  LRLayout, TopdownLayout
 3. draw transition(according position)
 
 """
+
+new_roman_font = ImageFont.truetype("./times-new-roman.ttf", 20)
+
 
 def draw(layout, file = None):
     if isinstance(layout, LRLayout):
@@ -32,7 +35,7 @@ def __draw_new_right_arrow( draw, x1, y1, x2, y2):
 
 
 def draw_text(draw, x, y, str_text):
-    draw.text((x, y), str_text, fill="black")
+    draw.text((x, y), str_text, fill="black", font=new_roman_font)
 
 
 def drawRectangle(draw, rectangle):
