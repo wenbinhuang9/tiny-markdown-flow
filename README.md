@@ -4,7 +4,7 @@ Generate the flow by markdown automatically.
 
 # Flow
 
-![image](https://github.com/wenbinhuang9/tiny-markdown-flow/blob/master/new_nfa_draw.jpg)
+![image](https://github.com/wenbinhuang9/tiny-markdown-flow/blob/master/lrlayout.jpg)
 
 # How to use
 
