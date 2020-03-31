@@ -130,8 +130,8 @@ class TopdownLayout():
         self.y0 = 50
         self.padding = 10
         self.box_place = 50
-        self.height = 30
-        self.char_place = 5
+        self.height = 40
+        self.char_place = 10
         self.max_len = self.getMaxTextLen()
 
         self.rectangles = self.calPosition()
