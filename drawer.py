@@ -10,11 +10,11 @@ from layout import  LRLayout, TopdownLayout
 
 """
 
-def draw(layout):
+def draw(layout, file = None):
     if isinstance(layout, LRLayout):
-        drawLRLayout(layout)
+        drawLRLayout(layout, file)
     elif isinstance(layout, TopdownLayout):
-        drawTdLayout(layout)
+        drawTdLayout(layout, file)
 
 
 def __draw_new_right_arrow( draw, x1, y1, x2, y2):
@@ -41,7 +41,10 @@ def drawRectangle(draw, rectangle):
     text_x, text_y = rectangle.text_pos
 
     draw_text(draw, text_x, text_y, rectangle.text)
-def drawLRLayout(lrLayout):
+
+def drawLRLayout(lrLayout, file = None):
+    if file == None:
+        file = "./lrlayout.jpg"
     width, height = lrLayout.width, lrLayout.height
 
     im = Image.new('RGB', (width, height), (255, 255, 255))
@@ -54,10 +57,12 @@ def drawLRLayout(lrLayout):
         x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
         __draw_new_right_arrow(draw, x1, y1, x2, y2 )
 
-    im.save('./new_nfa_draw.jpg', format='JPEG', subsampling=0, quality=95)
+    im.save(file, format='JPEG', subsampling=0, quality=95)
 
 
-def drawTdLayout(topdownLayout):
+def drawTdLayout(topdownLayout, file = None):
+    if file == None:
+        file = "./topdown.jpg"
     width, height = topdownLayout.width, topdownLayout.height
 
     im = Image.new('RGB', (width, height), (255, 255, 255))
@@ -70,7 +75,7 @@ def drawTdLayout(topdownLayout):
         x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
         __draw_new_top_down_arrow(draw, x1, y1, x2, y2 )
 
-    im.save('./topdown.jpg', format='JPEG', subsampling=0, quality=95)
+    im.save(file, format='JPEG', subsampling=0, quality=95)
 
 
 def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):

@@ -3,7 +3,7 @@ BNF for this parser
 
 graph->'type' text | multext
 multext->text '>'multext | text
-text-> ID
+text-> ID | 'ID text'
 """
 
 from lexer import POINTER, TEXT, Lexer

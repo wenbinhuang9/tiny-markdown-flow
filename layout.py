@@ -56,7 +56,7 @@ class LRLayout():
         self.padding = 10
         self.box_place = 50
         self.height = 30
-        self.char_place = 10
+        self.char_place = 8
 
         self.rectangles = self.calPosition()
         self.transitions = self.calTransitionPos()
@@ -131,7 +131,7 @@ class TopdownLayout():
         self.padding = 10
         self.box_place = 50
         self.height = 30
-        self.char_place = 10
+        self.char_place = 5
         self.max_len = self.getMaxTextLen()
 
         self.rectangles = self.calPosition()
