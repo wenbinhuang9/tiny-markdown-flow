@@ -1,6 +1,10 @@
 # tiny-markdown-flow
-graph flow, sequence flow, left to right flow, markdown
 
+Generate the picture by markdown automatically. 
+
+# Flow
+
+![image]()
 
 # types 
 
