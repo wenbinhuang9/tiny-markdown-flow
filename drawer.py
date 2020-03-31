@@ -26,8 +26,8 @@ def __draw_new_right_arrow( draw, x1, y1, x2, y2):
 
     ### draw arrow
     end_x, end_y = x2, y2
-    upper_arrow_x, upperarrow_y = end_x - 10, y2 + 10
-    lower_arrow_x, lower_arrow_y = end_x - 10, y2 - 10
+    upper_arrow_x, upperarrow_y = end_x - 5, y2 + 5
+    lower_arrow_x, lower_arrow_y = end_x - 5, y2 - 5
 
     draw.line((upper_arrow_x, upperarrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
     draw.line((lower_arrow_x, lower_arrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
@@ -40,7 +40,7 @@ def draw_text(draw, x, y, str_text):
 
 def drawRectangle(draw, rectangle):
     point = rectangle.points()
-    draw.rectangle(rectangle.points(),  fill=(255, 255, 255), outline=(0, 0, 0), width=1)
+    draw.rectangle(rectangle.points(),  fill=(230,230,250), outline=(220, 220, 250), width=1)
     text_x, text_y = rectangle.text_pos
 
     draw_text(draw, text_x, text_y, rectangle.text)
@@ -83,7 +83,6 @@ def drawTdLayout(topdownLayout, file = None):
 
 def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)
-
 
     ### draw arrow
     end_x, end_y = x2, y2
