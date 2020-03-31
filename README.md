@@ -1,6 +1,6 @@
 # tiny-markdown-flow
 
-Generate the picture by markdown automatically. 
+Generate the flow by markdown automatically. 
 
 # Flow
 
