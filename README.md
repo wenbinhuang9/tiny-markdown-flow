@@ -4,8 +4,10 @@ Generate the picture by markdown automatically.
 
 # Flow
 
-![image]()
+![image](https://github.com/wenbinhuang9/tiny-markdown-flow/blob/master/new_nfa_draw.jpg)
 
-# types 
+# Graphs supported
 
-添加架构图
+1. Linear left to right box graph
+
+
