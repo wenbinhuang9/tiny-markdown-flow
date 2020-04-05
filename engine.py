@@ -14,8 +14,10 @@ def interpret(input, file = None):
         layout = getLayout(graphType, pos)
         layoutList.append(layout)
 
-    ## here has a porblem 
-    im ,draw = createImage(layoutList[-1], file)
+    ## here has a porblem
+    maxwidth =  max([ layout.width for layout in layoutList])
+    maxheight = max([ layout.height for layout in layoutList])
+    im ,draw = createImage(maxwidth, maxheight, file)
 
     for layout in layoutList:
         startDraw(layout, draw)

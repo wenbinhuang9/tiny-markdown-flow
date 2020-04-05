@@ -56,26 +56,27 @@ class LRLayout():
         self.box_place = 50
         self.height = 30
         self.char_place = 8
-
+        self.level_interval = 50
         self.rectangles = self.calPosition()
         self.transitions = self.calTransitionPos()
+
 
 
     def calPosition(self):
         ans = []
 
         accumulative_x = self.x0
-        bottom_y = self.y0 + self.height + self.padding * 2
+        max_bottom_y = self.y0 + self.height + self.padding * 2
         for w, h, text in self.width_height:
             left_top_x = accumulative_x
             accumulative_x += (len(text) * self.char_place + self.padding * 2 )
             right_bottom_x = accumulative_x
             accumulative_x += self.box_place
 
-            left_top_y = self.x0
+            left_top_y = self.x0 + self.level_interval * h + self.height * h
 
-            right_bottom_y = bottom_y
-
+            right_bottom_y = left_top_y + self.height
+            max_bottom_y = right_bottom_y
             rec = Rectangle(left_top_x, left_top_y, right_bottom_x, right_bottom_y, text)
             ans.append(rec)
 
@@ -84,7 +85,7 @@ class LRLayout():
             rec.text_pos = (text_x, text_y)
 
         self.width = accumulative_x  + self.box_place
-        self.height = bottom_y + 20
+        self.height = max_bottom_y + 20
 
         return ans
 

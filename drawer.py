@@ -42,10 +42,10 @@ def drawRectangle(draw, rectangle):
 
     draw_text(draw, text_x, text_y, rectangle.text)
 
-def createImage(layout, file= None):
+def createImage(width, height, file= None):
     if file == None:
         file = "lrlayout.jpg"
-    width, height = layout.width, layout.height
+
     im = Image.new('RGB', (width, height), (255, 255, 255))
     draw = ImageDraw.Draw(im)
 
