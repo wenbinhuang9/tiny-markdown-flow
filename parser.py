@@ -1,12 +1,11 @@
 """
 BNF for this parser
 
-graph->'type' text | multext
+graph->'type' text | multext ('\n' multex)*
 multext->text '>'multext | text
 text-> ID | 'ID text'
 """
-
-from lexer import   Lexer
+from lexer import Lexer
 
 INTERVAL_LEN = 5
 class TextAST():
@@ -24,29 +23,26 @@ class TextAST():
 
 class MulTextAST():
     def __init__(self):
-        self.text = None
-        self.multext = None
+        self.texts = []
 
 
-
-    def addChildList(self, text, multext):
-        self.text = text
-        self.multext = multext
+    def add(self, text):
+        self.texts.append(text)
         return self
 
     def position(self, width = 0, height = 0):
         ans = []
-        ans1 = self.text.position(width + 1, height)
-        ans2 = self.multext.position(width + 2, height)
+        for text in self.texts:
+            ans1 = text.position(width + 1, height)
 
-        ans.extend(ans1)
-        ans.extend(ans2)
+            ans.extend(ans1)
 
         return ans
 
 
     def __repr__(self):
-        return ",".join([child.__repr__() for child in self.childs])
+       # return ",".join([child.__repr__() for child in self.childs])
+        return ""
 class GraphAST():
     def __init__(self, type = None):
         self.type = type
@@ -67,7 +63,7 @@ class GraphAST():
         return positionList
 
     def __repr__(self):
-        return self.type.__repr__() + "," + self.child.__repr__()
+        return self.type.__repr__() + "," + self.childs.__repr__()
 
 class TextParser():
     def __init__(self):
@@ -97,20 +93,16 @@ class MulTextParser():
         self.text = text
 
     def parse(self, lex):
-        token = lex.peak()
-        token1 = lex.peak(1)
+        mulText = MulTextAST()
+        mulText.add(self.text.parse(lex))
+        while lex.peak()!= None and lex.peak().value != "\n":
+            token1 = lex.nextToken()
+            assert token1.value == ">"
+            text1 = self.text.parse(lex)
 
-        if token1 == None:
-            return self.text.parse(lex)
+            mulText.add(text1)
 
-        text1 = self.text.parse(lex)
-        token1 = lex.nextToken()
-        assert  token1.value == ">"
-
-        text2 = self.parse(lex)
-
-        return MulTextAST().addChildList(text1, text2)
-
+        return mulText
 
 
 class GraphParser():
@@ -132,7 +124,13 @@ class GraphParser():
         multext = self.multext.parse(lex)
 
         graph.add(multext)
+        while lex.peak() != None:
+            newline = lex.nextToken()
+            assert newline.value == "\n"
 
+            multext = self.multext.parse(lex)
+
+            graph.add(multext)
         return graph
 
 

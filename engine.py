@@ -1,6 +1,6 @@
 
 from layout import   getLayout
-from drawer import  draw
+from drawer import  startDraw, createImage, save
 from parser import parse
 
 def interpret(input, file = None):
@@ -14,8 +14,12 @@ def interpret(input, file = None):
         layout = getLayout(graphType, pos)
         layoutList.append(layout)
 
-    for layout in layoutList:
-        draw(layout, file)
+    ## here has a porblem 
+    im ,draw = createImage(layoutList[-1], file)
 
+    for layout in layoutList:
+        startDraw(layout, draw)
+
+    save(im, file)
 if __name__ == "__main__":
     interpret("type LR lexical_analysis > parser_analysis > layout_calculation > paint")

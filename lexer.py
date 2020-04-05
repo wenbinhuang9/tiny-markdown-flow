@@ -3,7 +3,7 @@ import re
 
 TEXT = "TEXT"
 POINTER = "POINTER"
-
+NEWLINE = "NEWLINE"
 class Token():
     def __init__(self, type, value):
         self.type = type
@@ -37,10 +37,12 @@ class Lexer():
         return  self.tokens[index]
 
     def add_token(self, s):
-        if s.strip() == "":
+        if s == "\n":
+          self.tokens.append(Token(NEWLINE, s))
+        elif s.strip() == "":
             # just empty string do nothing
             return
-        if s in self.pointer_sym:
+        elif s in self.pointer_sym:
             self.tokens.append( Token(POINTER, s))
 
         else:
@@ -53,6 +55,7 @@ class Lexer():
             while begin < end:
                 matched_obj = self.pattern.match(input, begin, end)
                 matched_str = matched_obj.group(1)
+
 
                 begin += len(matched_str)
 

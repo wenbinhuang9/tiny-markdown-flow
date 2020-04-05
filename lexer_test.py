@@ -4,7 +4,7 @@ from lexer import Lexer
 class MyTestCase(unittest.TestCase):
     def test_lexer(self):
         l = Lexer()
-        input = "cd > ef > 'hijklmn'"
+        input = "cd > ef > 'hijklmn' \n  "
         l.run(input)
 
         token1 = l.nextToken()
@@ -14,6 +14,7 @@ class MyTestCase(unittest.TestCase):
         token5 = l.nextToken()
         token6 = l.nextToken()
         token7 = l.nextToken()
+        token8 = l.nextToken()
 
         self.assertEqual(token1.value == "cd", True)
         self.assertEqual(token2.value == ">", True)
@@ -22,6 +23,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(token5.value == "'", True)
         self.assertEqual(token6.value == "hijklmn", True)
         self.assertEqual(token7.value == "'", True)
+        self.assertEqual(token8.value == "\n", True)
 
 
 if __name__ == '__main__':

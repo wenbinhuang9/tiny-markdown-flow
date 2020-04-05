@@ -10,6 +10,12 @@ class MyTestCase(unittest.TestCase):
         correct_file = "test_LR1_correct.jpg"
         self.assertEqual(filecmp.cmp(file, correct_file), True)
 
+    def test_Mul_LR(self):
+        file = "test_LR1.jpg"
+        interpret("type LR 'lexer analysis' > 'parser analysis' > layout > draw \n a > b > c", "test_Mul_LR.jpg")
+        #correct_file = "test_Mul_LR_correct.jpg"
+        #self.assertEqual(filecmp.cmp(file, correct_file), True)
+
     def test_newLR(self):
         file = "lr.jpg"
         interpret("type LR this > is > left > to > right > graph", file)

@@ -9,16 +9,14 @@ from layout import  LRLayout, TopdownLayout
 3. draw transition(according position)
 
 """
-
 new_roman_font = ImageFont.truetype("./times-new-roman.ttf", 20)
 
 
-def draw(layout, file = None):
+def startDraw(layout, draw):
     if isinstance(layout, LRLayout):
-        drawLRLayout(layout, file)
+        drawLRLayout(layout, draw)
     elif isinstance(layout, TopdownLayout):
-        drawTdLayout(layout, file)
-
+        drawTdLayout(layout, draw)
 
 def __draw_new_right_arrow( draw, x1, y1, x2, y2):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)
@@ -33,7 +31,6 @@ def __draw_new_right_arrow( draw, x1, y1, x2, y2):
     draw.line((lower_arrow_x, lower_arrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
 
 
-
 def draw_text(draw, x, y, str_text):
     draw.text((x, y), str_text, fill="black", font=new_roman_font)
 
@@ -45,13 +42,19 @@ def drawRectangle(draw, rectangle):
 
     draw_text(draw, text_x, text_y, rectangle.text)
 
-def drawLRLayout(lrLayout, file = None):
+def createImage(layout, file= None):
     if file == None:
         file = "lrlayout.jpg"
-    width, height = lrLayout.width, lrLayout.height
-
+    width, height = layout.width, layout.height
     im = Image.new('RGB', (width, height), (255, 255, 255))
     draw = ImageDraw.Draw(im)
+
+    return (im,draw)
+
+def save(im, file):
+    im.save(file, format='JPEG', subsampling=0, quality=95)
+
+def drawLRLayout(lrLayout, draw):
 
     for rec in lrLayout.rectangles:
         drawRectangle(draw, rec)
@@ -60,26 +63,13 @@ def drawLRLayout(lrLayout, file = None):
         x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
         __draw_new_right_arrow(draw, x1, y1, x2, y2 )
 
-    im.save(file, format='JPEG', subsampling=0, quality=95)
-
-
-def drawTdLayout(topdownLayout, file = None):
-    if file == None:
-        file = "./topdown.jpg"
-    width, height = topdownLayout.width, topdownLayout.height
-
-    im = Image.new('RGB', (width, height), (255, 255, 255))
-    draw = ImageDraw.Draw(im)
-
+def drawTdLayout(topdownLayout, draw):
     for rec in topdownLayout.rectangles:
         drawRectangle(draw, rec)
 
     for tran in topdownLayout.transitions:
         x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
         __draw_new_top_down_arrow(draw, x1, y1, x2, y2 )
-
-    im.save(file, format='JPEG', subsampling=0, quality=95)
-
 
 def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)
@@ -91,4 +81,3 @@ def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
 
     draw.line((upper_arrow_x, upperarrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
     draw.line((lower_arrow_x, lower_arrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
-
