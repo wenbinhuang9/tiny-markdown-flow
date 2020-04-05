@@ -10,5 +10,13 @@ class MyTestCase(unittest.TestCase):
 
         self.assertEqual(isinstance(tree, GraphAST), True)
         print(tree)
+
+    def test_parser1(self):
+        input = "type LR 'abc def' > 'hello world"
+
+        tree = parse(input)
+
+        print(tree)
+
 if __name__ == '__main__':
     unittest.main()

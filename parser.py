@@ -6,7 +6,7 @@ multext->text '>'multext | text
 text-> ID | 'ID text'
 """
 
-from lexer import POINTER, TEXT, Lexer
+from lexer import   Lexer
 
 INTERVAL_LEN = 5
 class TextAST():
@@ -48,18 +48,23 @@ class MulTextAST():
     def __repr__(self):
         return ",".join([child.__repr__() for child in self.childs])
 class GraphAST():
-    def __init__(self, type = None, child = None):
+    def __init__(self, type = None):
         self.type = type
-        self.child = child
+        self.childs = []
 
     def get_type(self):
         return self.type.token
 
-    def child(self, child):
-        self.child = child
+    def add (self, child):
+        self.childs.append(child)
 
     def position(self):
-        return self.child.position()
+        positionList = []
+        for i, child in enumerate(self.childs):
+            pos = child.position(height= i)
+            positionList.append(pos)
+
+        return positionList
 
     def __repr__(self):
         return self.type.__repr__() + "," + self.child.__repr__()
@@ -69,9 +74,22 @@ class TextParser():
         pass
 
     def parse(self, lex):
-        token = lex.nextToken()
+        curToken = lex.peak()
+        if curToken.value == "'":
+            curVauleList = []
+            lex.nextToken()
+            curToken = lex.nextToken()
+            while curToken.value != "'":
+                curVauleList.append(curToken.value)
+                curToken = lex.nextToken()
 
-        return TextAST(token.value)
+            return TextAST(" ".join(curVauleList))
+
+        else:
+
+            token = lex.nextToken()
+
+            return TextAST(token.value)
 
 class MulTextParser():
 
@@ -113,7 +131,7 @@ class GraphParser():
 
         multext = self.multext.parse(lex)
 
-        graph.child = multext
+        graph.add(multext)
 
         return graph
 

@@ -47,7 +47,7 @@ def drawRectangle(draw, rectangle):
 
 def drawLRLayout(lrLayout, file = None):
     if file == None:
-        file = "./lrlayout.jpg"
+        file = "lrlayout.jpg"
     width, height = lrLayout.width, lrLayout.height
 
     im = Image.new('RGB', (width, height), (255, 255, 255))

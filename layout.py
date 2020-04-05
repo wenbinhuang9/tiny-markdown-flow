@@ -20,11 +20,11 @@ class Transition():
 
 
 
-def getLayout(graph):
-    if graph.get_type() == "LR":
-        return LRLayout(graph)
-    elif graph.get_type() == "TD":
-        return TopdownLayout(graph)
+def getLayout(graphType, pos):
+    if graphType == "LR":
+        return LRLayout(pos)
+    elif graphType == "TD":
+        return TopdownLayout(pos)
 
     return None
 
@@ -41,12 +41,11 @@ class TopdownLayout():
 Left to right linear layout 
 """
 class LRLayout():
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self, pos):
 
         self.width = None
         self.height = None
-        self.width_height = self.calWidthAndHeight()
+        self.width_height = pos
 
         self.width = self.width_height[-1][0]
         self.height = self.width_height[-1][1]
@@ -60,8 +59,7 @@ class LRLayout():
 
         self.rectangles = self.calPosition()
         self.transitions = self.calTransitionPos()
-    def calWidthAndHeight(self):
-        return self.graph.position()
+
 
     def calPosition(self):
         ans = []
@@ -116,12 +114,12 @@ class LRLayout():
 Top to down linear layout 
 """
 class TopdownLayout():
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self, pos):
+
 
         self.width = None
         self.height = None
-        self.width_height = self.calWidthAndHeight()
+        self.width_height = pos
 
         self.width = self.width_height[-1][0]
         self.height = self.width_height[-1][1]
@@ -145,9 +143,6 @@ class TopdownLayout():
            maxx =  max(maxx, len(text))
 
         return maxx
-
-    def calWidthAndHeight(self):
-        return self.graph.position()
 
     def calPosition(self):
         ans = []
