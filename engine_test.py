@@ -30,5 +30,15 @@ class MyTestCase(unittest.TestCase):
 
         self.assertEqual(filecmp.cmp(file, correct_file), True)
 
+    def DefineTransition(self):
+        input = "type LR  1'ancestor1 male'" \
+                     " \n 2'ancestor2 male' " \
+                   "\n 3'qmei female' 4'xhe male' \n 5'lming male'" \
+                     "transition 1>2 2>3 3>5 "
+
+        file ="test_DefineTransition.jpg"
+        interpret(input, file)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -5,17 +5,35 @@ graph->'type' text | multext ('\n' multex)*
 multext->text '>'multext | text
 text-> ID | 'ID text'
 """
+
+## todo support ID??? for transition
+## todo this graph should has a minimal unit, the unit has ID, shape type, attribute , color, background.  redesign it.
 from lexer import Lexer
 
+from drawer import  Box
+
 INTERVAL_LEN = 5
+RECTANGLE = "#"
+CIRCLE = "."
+SHAPE_SET = set(["#", "."])
 class TextAST():
     def __init__(self, token):
         self.token = token
+        self.shape = RECTANGLE
+        self.__parse_shape()
+
+    def __parse_shape(self):
+        if len(self.token) > 0:
+            if self.token[0] in SHAPE_SET:
+                self.shape = self.token[0]
+                self.token = self.token[1:]
+
 
     def position(self, width, height):
         ans  = []
 
-        ans.append((width, height, self.token))
+        box = Box().addWidth(width).addHeight(height).addText(self.token).addShape(self.shape)
+        ans.append(box)
 
         return ans
     def __repr__(self):

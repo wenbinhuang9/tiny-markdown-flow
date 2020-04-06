@@ -17,7 +17,7 @@ class Token():
 class Lexer():
     def __init__(self):
         self.tokens = []
-        self.reg = "([0-9a-zA-Z_]+|>|\s|\')"
+        self.reg = "([0-9a-zA-Z_#\.]+|>|\s|\')"
         self.pattern = re.compile(self.reg)
         self.pointer_sym = [">"]
 

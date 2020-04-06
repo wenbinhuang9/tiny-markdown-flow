@@ -12,6 +12,33 @@ from layout import  LRLayout, TopdownLayout
 new_roman_font = ImageFont.truetype("./times-new-roman.ttf", 20)
 
 
+class Box():
+    def __init__(self):
+        self.width = None
+        self.height = None
+        self.text = None
+        self.shape = None
+
+    def addWidth(self, width):
+        self.width = width
+        return self
+
+
+    def addHeight(self, height):
+        self.height = height
+        return self
+
+    def addText(self, text):
+        self.text = text
+        return  self
+
+    def addShape(self, shape):
+        self.shape = shape
+        return self
+
+    def __repr__(self):
+        return self.shape + self.text
+
 def startDraw(layout, draw):
     if isinstance(layout, LRLayout):
         drawLRLayout(layout, draw)

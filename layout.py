@@ -41,14 +41,14 @@ class TopdownLayout():
 Left to right linear layout 
 """
 class LRLayout():
-    def __init__(self, pos):
+    def __init__(self, boxList):
 
         self.width = None
         self.height = None
-        self.width_height = pos
+        self.boxList = boxList
 
-        self.width = self.width_height[-1][0]
-        self.height = self.width_height[-1][1]
+        self.width = self.boxList[-1].width
+        self.height = self.boxList[-1].height
 
         self.x0 = 50
         self.y0 = 50
@@ -67,7 +67,8 @@ class LRLayout():
 
         accumulative_x = self.x0
         max_bottom_y = self.y0 + self.height + self.padding * 2
-        for w, h, text in self.width_height:
+        for box in self.boxList:
+            w,h, text, shape = box.width, box.height, box.text, box.shape
             left_top_x = accumulative_x
             accumulative_x += (len(text) * self.char_place + self.padding * 2 )
             right_bottom_x = accumulative_x
@@ -115,15 +116,14 @@ class LRLayout():
 Top to down linear layout 
 """
 class TopdownLayout():
-    def __init__(self, pos):
-
+    def __init__(self, boxList):
 
         self.width = None
         self.height = None
-        self.width_height = pos
+        self.boxList = boxList
 
-        self.width = self.width_height[-1][0]
-        self.height = self.width_height[-1][1]
+        self.width = self.boxList[-1].width
+        self.height = self.boxList[-1].height
 
         self.x0 = 50
         self.y0 = 50
@@ -140,8 +140,10 @@ class TopdownLayout():
     def getMaxTextLen(self):
         maxx = 0
 
-        for w, h, text in self.width_height:
-           maxx =  max(maxx, len(text))
+        for box in self.boxList:
+            w,h, text, shape = box.width, box.height, box.text, box.shape
+
+            maxx =  max(maxx, len(text))
 
         return maxx
 
@@ -151,7 +153,9 @@ class TopdownLayout():
         left_up_x = self.x0
         right_bottom_x = self.x0 + self.max_len * self.char_place + self.padding * 2
         temp_left_up_y = self.y0
-        for w, h, text in self.width_height:
+        for box in self.boxList:
+            w,h, text, shape = box.width, box.height, box.text, box.shape
+
             left_up_y = temp_left_up_y
             right_bottom_y = left_up_y + self.height
 
