@@ -8,17 +8,28 @@ text-> ID | 'ID text'
 ## todo support ID??? for transition
 ## todo this graph should has a minimal unit, the unit has ID, shape type, attribute , color, background.  redesign it.
 
-## todo how to support transition on arrow -text-
+
+## todo how to embed ID into that???
 from lexer import Lexer
+from datetime import datetime
+from uuid import uuid4
+def uniqueID():
+    eventid = datetime.now().strftime('%Y%m-%d%H-%M%S-') + str(uuid4())
+
+    return eventid
 
 class Box():
     def __init__(self):
-        self.ID = None
+        self.ID = uniqueID()
         self.width = None
         self.height = None
         self.text = None
         self.shape = None
 
+
+    def addID(self, ID):
+        self.ID = ID
+        return self
     def addWidth(self, width):
         self.width = width
         return self
@@ -44,8 +55,6 @@ class TransitionNode():
         self.text = text
         self.sourceID= None
         self.targetID = None
-
-
 
 
 INTERVAL_LEN = 5
@@ -81,6 +90,7 @@ class MulTextAST():
     def __init__(self):
         self.texts = []
         self.transitions = []
+        self.boxList = None
 
 
     def addTransition(self, trans):
@@ -98,8 +108,19 @@ class MulTextAST():
 
             ans.extend(ans1)
 
+        ## this can be used in transition
+        self.boxList = ans
         return ans
 
+    def transition(self):
+        ans = []
+        for i in range(len(self.transitions)):
+            trans = self.transitions[i]
+            trans.sourceID = self.boxList[i].ID
+            trans.targetID = self.boxList[i + 1].ID
+            ans.append(trans)
+
+        return ans
 
     def __repr__(self):
        # return ",".join([child.__repr__() for child in self.childs])
@@ -114,6 +135,16 @@ class GraphAST():
 
     def add (self, child):
         self.childs.append(child)
+
+    def postionAndTranstion(self):
+        positionList = self.position()
+        transitionList = []
+
+        for i , child in enumerate(self.childs):
+            trans = child.transition()
+            transitionList.extend(trans)
+
+        return (positionList, transitionList)
 
     def position(self):
         positionList = []
@@ -165,7 +196,9 @@ class MulTextParser():
                 mulText.addTransition(TransitionNode())
             else:
                 text = self.text.parse(lex)
-                mulText.addTransition(TransitionNode(text))
+                mulText.addTransition(TransitionNode(text.token))
+                token1 = lex.nextToken()
+                assert token1.value == "-"
             text1 = self.text.parse(lex)
 
             mulText.add(text1)

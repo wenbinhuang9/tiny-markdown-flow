@@ -7,12 +7,12 @@ def interpret(input, file = None):
 
     tree = parse(input)
 
-    positionList = tree.position()
+    positionList , transitionList= tree.postionAndTranstion()
     layoutList = []
 
     for pos in positionList:
         graphType = tree.get_type()
-        layout = getLayout(graphType, pos)
+        layout = getLayout(graphType, pos, transitionList)
         layoutList.append(layout)
 
     ## here has a porblem

@@ -20,7 +20,7 @@ def startDraw(layout, draw):
     elif isinstance(layout, TopdownLayout):
         drawTdLayout(layout, draw)
 
-def __draw_new_right_arrow( draw, x1, y1, x2, y2):
+def __draw_new_right_arrow( draw, x1, y1, x2, y2, text = ""):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)
 
 
@@ -32,8 +32,14 @@ def __draw_new_right_arrow( draw, x1, y1, x2, y2):
     draw.line((upper_arrow_x, upperarrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
     draw.line((lower_arrow_x, lower_arrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
 
+    x = int((x1 + x2) /2) - len(text)/2 * 10
+    y = int((y1 + y2) / 2)
+    if text != "" or text != None:
+        draw_text(draw, x, y, text)
 
 def draw_text(draw, x, y, str_text):
+    if str_text == "10":
+        print("here")
     draw.text((x, y), str_text, fill="black", font=new_roman_font)
 
 
@@ -67,8 +73,8 @@ def drawLRLayout(lrLayout, draw):
             drawRectangle(draw, rec)
 
     for tran in lrLayout.transitions:
-        x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
-        __draw_new_right_arrow(draw, x1, y1, x2, y2 )
+        x1, y1, x2, y2, text  = tran.x1, tran.y1, tran.x2, tran.y2, tran.text
+        __draw_new_right_arrow(draw, x1, y1, x2, y2 , text)
 
 def drawTdLayout(topdownLayout, draw):
     for rec in topdownLayout.rectangles:

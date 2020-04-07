@@ -13,17 +13,17 @@ class Rectangle():
         return [self.left_up_x, self.left_up_y, self.bottom_right_x, self.bottom_right_y]
 
 class Circle():
-    def __init__(self, x1, y1, r, text = None):
+    def __init__(self, x1, y1, r, text = "", ID=""):
         self.x1 = x1
         self.y1 = y1
         self.r = r
         self.text = text
-
+        self.ID = ID
     def points(self):
         return [self.x1, self.y1, self.r]
 
 class Transition():
-    def __init__(self, x1, y1, x2, y2, text = None):
+    def __init__(self, x1, y1, x2, y2, text = ""):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
@@ -32,11 +32,11 @@ class Transition():
 
 
 
-def getLayout(graphType, pos):
+def getLayout(graphType, pos, tran):
     if graphType == "LR":
-        return LRLayout(pos)
+        return LRLayout(pos, tran)
     elif graphType == "TD":
-        return TopdownLayout(pos)
+        return TopdownLayout(pos, tran)
 
     return None
 
@@ -53,12 +53,12 @@ class TopdownLayout():
 Left to right linear layout 
 """
 class LRLayout():
-    def __init__(self, boxList):
-
+    def __init__(self, boxList, transitionList):
         self.width = None
         self.height = None
         self.boxList = boxList
-
+        self.transitionList = transitionList
+        self.transitionMap = self.calTransitionMap(transitionList)
         self.width = self.boxList[-1].width
         self.height = self.boxList[-1].height
 
@@ -72,6 +72,8 @@ class LRLayout():
         self.pos = self.position()
         self.transitions = self.gettransition()
 
+    def calTransitionMap(self, transtionList):
+        return { (trans.sourceID, trans.targetID):trans for trans in transtionList}
 
     def position(self):
         if self.boxList[0].shape == CIRCLE:
@@ -123,13 +125,13 @@ class LRLayout():
         accumulative_x = self.x0
         accumulative_y = self.y0
         for box in self.boxList:
-            w,h, text, shape = box.width, box.height, box.text, box.shape
+            w,h, text, shape, ID = box.width, box.height, box.text, box.shape, box.ID
 
             y = self.y0 + h * self.height
             radius = max(30, len(text) * self.char_place/2 + 10)
-            x = accumulative_x + self.box_place + radius
+            x = accumulative_x + self.box_place + 10 + radius
             accumulative_x = x
-            ans.append(Circle(x, y, radius, text))
+            ans.append(Circle(x, y, radius, text, ID = ID))
 
         self.width = accumulative_x +  100
         self.height = self.x0 + h * self.height + 50
@@ -144,7 +146,8 @@ class LRLayout():
         pre = circleList[0]
         for i in range(1, len(circleList)):
             cur = circleList[i]
-            ans.append(Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1))
+            transNode = self.transitionMap.get((pre.ID, cur.ID))
+            ans.append(Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1, transNode.text))
 
         return ans
 
@@ -174,8 +177,8 @@ class LRLayout():
 Top to down linear layout 
 """
 class TopdownLayout():
-    def __init__(self, boxList):
-
+    def __init__(self, boxList, transitionList):
+        self.transitionList = transitionList
         self.width = None
         self.height = None
         self.boxList = boxList

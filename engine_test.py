@@ -41,10 +41,14 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_draw_lr_circle(self):
-        input = "type LR .1 -- .2 "
+        input = "type LR .1 -10- .2 "
 
         file = "test_draw_lr_circle.jpg"
+        correct_file ="test_draw_lr_circle_correct.jpg"
         interpret(input, file)
+
+        self.assertEqual(filecmp.cmp(file, correct_file), True)
+
 
 if __name__ == '__main__':
     unittest.main()
