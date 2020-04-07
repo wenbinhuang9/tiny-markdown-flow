@@ -1,4 +1,5 @@
-
+from parser import CIRCLE, RECTANGLE
+## todo support mixture shapes
 class Rectangle():
     def __init__(self, x1, y1, x2, y2, text ):
         self.left_up_x = x1
@@ -10,6 +11,16 @@ class Rectangle():
 
     def points(self):
         return [self.left_up_x, self.left_up_y, self.bottom_right_x, self.bottom_right_y]
+
+class Circle():
+    def __init__(self, x1, y1, r, text = None):
+        self.x1 = x1
+        self.y1 = y1
+        self.r = r
+        self.text = text
+
+    def points(self):
+        return [self.x1, self.y1, self.r]
 
 class Transition():
     def __init__(self, x1, y1, x2, y2):
@@ -57,10 +68,21 @@ class LRLayout():
         self.height = 30
         self.char_place = 8
         self.level_interval = 50
-        self.rectangles = self.calPosition()
-        self.transitions = self.calTransitionPos()
+        self.pos = self.position()
+        self.transitions = self.gettransition()
 
 
+    def position(self):
+        if self.boxList[0].shape == CIRCLE:
+            return self.calCirclePosition()
+        elif self.boxList[0].shape == RECTANGLE:
+            return self.calPosition()
+
+    def gettransition(self):
+        if self.boxList[0].shape == CIRCLE:
+            return self.circleTransition()
+        elif self.boxList[0].shape == RECTANGLE:
+            return self.calTransitionPos()
 
     def calPosition(self):
         ans = []
@@ -91,15 +113,50 @@ class LRLayout():
         return ans
 
 
+    def calCirclePosition(self):
+        ans = []
+
+        ## todo suprot
+        accumulative_x = self.x0
+        max_bottom_y = self.y0 + self.height + self.padding * 2
+        accumulative_x = self.x0
+        accumulative_y = self.y0
+        for box in self.boxList:
+            w,h, text, shape = box.width, box.height, box.text, box.shape
+
+            y = self.y0 + h * self.height
+            radius = max(30, len(text) * self.char_place/2 + 10)
+            x = accumulative_x + self.box_place + radius
+            accumulative_x = x
+            ans.append(Circle(x, y, radius, text))
+
+        self.width = accumulative_x +  100
+        self.height = self.x0 + h * self.height + 50
+        return ans
+
+    def circleTransition(self):
+        circleList = self.pos
+
+        if len(circleList) == 0:
+            return None
+        ans = []
+        pre = circleList[0]
+        for i in range(1, len(circleList)):
+            cur = circleList[i]
+            ans.append(Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1))
+
+        return ans
+
     def calTransitionPos(self):
-        if len(self.rectangles) == 0:
+
+        if len(self.pos) == 0:
             return None
 
-        previsouRec = self.rectangles[0]
+        previsouRec = self.pos[0]
 
         ans = []
-        for i in range(1, len(self.rectangles)):
-            curRec = self.rectangles[i]
+        for i in range(1, len(self.pos)):
+            curRec = self.pos[i]
 
             x1 = previsouRec.bottom_right_x
             y1 = previsouRec.left_up_y + (previsouRec.bottom_right_y - previsouRec.left_up_y) / 2

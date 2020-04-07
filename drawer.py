@@ -2,7 +2,7 @@
 from PIL import Image, ImageDraw, ImageFont
 
 
-from layout import  LRLayout, TopdownLayout
+from layout import LRLayout, TopdownLayout
 """
 1. calculate position(width, depth)for each state 
 2. draw position
@@ -12,32 +12,7 @@ from layout import  LRLayout, TopdownLayout
 new_roman_font = ImageFont.truetype("./times-new-roman.ttf", 20)
 
 
-class Box():
-    def __init__(self):
-        self.width = None
-        self.height = None
-        self.text = None
-        self.shape = None
 
-    def addWidth(self, width):
-        self.width = width
-        return self
-
-
-    def addHeight(self, height):
-        self.height = height
-        return self
-
-    def addText(self, text):
-        self.text = text
-        return  self
-
-    def addShape(self, shape):
-        self.shape = shape
-        return self
-
-    def __repr__(self):
-        return self.shape + self.text
 
 def startDraw(layout, draw):
     if isinstance(layout, LRLayout):
@@ -69,6 +44,7 @@ def drawRectangle(draw, rectangle):
 
     draw_text(draw, text_x, text_y, rectangle.text)
 
+
 def createImage(width, height, file= None):
     if file == None:
         file = "lrlayout.jpg"
@@ -81,10 +57,14 @@ def createImage(width, height, file= None):
 def save(im, file):
     im.save(file, format='JPEG', subsampling=0, quality=95)
 
+from  layout import Circle
 def drawLRLayout(lrLayout, draw):
 
-    for rec in lrLayout.rectangles:
-        drawRectangle(draw, rec)
+    for rec in lrLayout.pos:
+        if isinstance(rec, Circle):
+            __draw_cycle(draw, rec)
+        else:
+            drawRectangle(draw, rec)
 
     for tran in lrLayout.transitions:
         x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
@@ -108,3 +88,16 @@ def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
 
     draw.line((upper_arrow_x, upperarrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
     draw.line((lower_arrow_x, lower_arrow_y, end_x, end_y), fill=(0, 0, 0), width=1)
+
+
+def __draw_cycle( draw, circle):
+    x, y, r, text =  circle.x1, circle.y1, circle.r, circle.text
+    leftUpPoint = (x - r, y - r)
+    rightDownPoint = (x + r, y + r)
+    twoPointList = [leftUpPoint, rightDownPoint]
+    draw.ellipse(twoPointList, fill=(255, 255, 255), outline=(0,0,0), width=1)
+
+    if text:
+        ## todo make it in center
+        draw_text(draw, x, y - 10,text )
+    return draw

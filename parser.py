@@ -10,7 +10,33 @@ text-> ID | 'ID text'
 ## todo this graph should has a minimal unit, the unit has ID, shape type, attribute , color, background.  redesign it.
 from lexer import Lexer
 
-from drawer import  Box
+
+class Box():
+    def __init__(self):
+        self.width = None
+        self.height = None
+        self.text = None
+        self.shape = None
+
+    def addWidth(self, width):
+        self.width = width
+        return self
+
+
+    def addHeight(self, height):
+        self.height = height
+        return self
+
+    def addText(self, text):
+        self.text = text
+        return  self
+
+    def addShape(self, shape):
+        self.shape = shape
+        return self
+
+    def __repr__(self):
+        return self.shape + self.text
 
 INTERVAL_LEN = 5
 RECTANGLE = "#"

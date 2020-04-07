@@ -14,6 +14,5 @@ class MyTestCase(unittest.TestCase):
 
         im.save("./font.jpg", format='JPEG', subsampling=0, quality=95)
 
-
 if __name__ == '__main__':
     unittest.main()

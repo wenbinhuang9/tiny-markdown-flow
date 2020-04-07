@@ -40,5 +40,11 @@ class MyTestCase(unittest.TestCase):
         interpret(input, file)
 
 
+    def test_draw_lr_circle(self):
+        input = "type LR .1 > .2 "
+
+        file = "test_draw_lr_circle.jpg"
+        interpret(input, file)
+
 if __name__ == '__main__':
     unittest.main()

@@ -9,6 +9,7 @@ def interpret(input, file = None):
 
     positionList = tree.position()
     layoutList = []
+
     for pos in positionList:
         graphType = tree.get_type()
         layout = getLayout(graphType, pos)
@@ -17,7 +18,10 @@ def interpret(input, file = None):
     ## here has a porblem
     maxwidth =  max([ layout.width for layout in layoutList])
     maxheight = max([ layout.height for layout in layoutList])
+
+
     im ,draw = createImage(maxwidth, maxheight, file)
+
 
     for layout in layoutList:
         startDraw(layout, draw)
