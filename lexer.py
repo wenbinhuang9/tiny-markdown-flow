@@ -1,6 +1,8 @@
 import re
 
 
+## todo support other kinds of transition , including lexer change and parse change , adding text on transiton, good!!!
+## todo refactor the code framework and  code directory
 TEXT = "TEXT"
 POINTER = "POINTER"
 NEWLINE = "NEWLINE"
@@ -17,7 +19,7 @@ class Token():
 class Lexer():
     def __init__(self):
         self.tokens = []
-        self.reg = "([0-9a-zA-Z_#\.]+|>|\s|\')"
+        self.reg = "([0-9a-zA-Z_#\.]+|\-|\s|\')"
         self.pattern = re.compile(self.reg)
         self.pointer_sym = [">"]
 

@@ -2,17 +2,18 @@
 BNF for this parser
 
 graph->'type' text | multext ('\n' multex)*
-multext->text '>'multext | text
+multext->text '-'[text|empty]'-' multext | text
 text-> ID | 'ID text'
 """
-
 ## todo support ID??? for transition
 ## todo this graph should has a minimal unit, the unit has ID, shape type, attribute , color, background.  redesign it.
-from lexer import Lexer
 
+## todo how to support transition on arrow -text-
+from lexer import Lexer
 
 class Box():
     def __init__(self):
+        self.ID = None
         self.width = None
         self.height = None
         self.text = None
@@ -37,6 +38,15 @@ class Box():
 
     def __repr__(self):
         return self.shape + self.text
+
+class TransitionNode():
+    def __init__(self, text = ""):
+        self.text = text
+        self.sourceID= None
+        self.targetID = None
+
+
+
 
 INTERVAL_LEN = 5
 RECTANGLE = "#"
@@ -65,10 +75,17 @@ class TextAST():
     def __repr__(self):
         return self.token
 
+
+
 class MulTextAST():
     def __init__(self):
         self.texts = []
+        self.transitions = []
 
+
+    def addTransition(self, trans):
+        self.transitions.append(trans)
+        return self
 
     def add(self, text):
         self.texts.append(text)
@@ -141,7 +158,14 @@ class MulTextParser():
         mulText.add(self.text.parse(lex))
         while lex.peak()!= None and lex.peak().value != "\n":
             token1 = lex.nextToken()
-            assert token1.value == ">"
+            assert token1.value == "-"
+            token1 = lex.peak()
+            if token1.value == "-":
+                lex.nextToken()
+                mulText.addTransition(TransitionNode())
+            else:
+                text = self.text.parse(lex)
+                mulText.addTransition(TransitionNode(text))
             text1 = self.text.parse(lex)
 
             mulText.add(text1)
