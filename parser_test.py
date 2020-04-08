@@ -4,19 +4,25 @@ import unittest
 from parser import parse, GraphAST
 class MyTestCase(unittest.TestCase):
     def test_parser(self):
-        input = "type LR abc > def > dfa"
+        input = "type LR 'abc def' -- def -- dfa"
 
         tree = parse(input)
 
         self.assertEqual(isinstance(tree, GraphAST), True)
-        print(tree)
+        self.assertEqual(tree.type.getText() == "LR", True)
+        self.assertEqual(len(tree.childs) == 1, True)
 
-    def test_parser1(self):
-        input = "type LR 'abc def' > 'hello world"
+        correctText = [["abc def", "def", "dfa"]]
 
-        tree = parse(input)
+        for j , child in enumerate(tree.childs):
+            self.assertEqual( all( c.getText() == correctText[j][i] for i, c in enumerate(child.texts)), True)
 
-        print(tree)
+
+    def test_transition_in_parser(self):
+        input = "type LR 'abc def' -- def -- dfa \n type transition "
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

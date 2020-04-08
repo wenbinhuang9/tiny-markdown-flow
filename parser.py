@@ -5,11 +5,7 @@ graph->'type' text | multext ('\n' multex)*
 multext->text '-'[text|empty]'-' multext | text
 text-> ID | 'ID text'
 """
-## todo support ID??? for transition
-## todo this graph should has a minimal unit, the unit has ID, shape type, attribute , color, background.  redesign it.
 
-
-## todo how to embed ID into that???
 from lexer import Lexer
 from datetime import datetime
 from uuid import uuid4
@@ -28,12 +24,13 @@ class Box():
 
 
     def addID(self, ID):
-        self.ID = ID
+        if ID != None and ID != "":
+            self.ID = ID
+
         return self
     def addWidth(self, width):
         self.width = width
         return self
-
 
     def addHeight(self, height):
         self.height = height
@@ -56,6 +53,15 @@ class TransitionNode():
         self.sourceID= None
         self.targetID = None
 
+    def setSourceID(self, sourceID):
+        self.sourceID =sourceID
+        return self
+
+    def setTargetID(self, targetID):
+        self.targetID = targetID
+
+        return self
+
 
 INTERVAL_LEN = 5
 RECTANGLE = "#"
@@ -63,26 +69,40 @@ CIRCLE = "."
 SHAPE_SET = set(["#", "."])
 class TextAST():
     def __init__(self, token):
-        self.token = token
+        self.text = token
         self.shape = RECTANGLE
+        self.ID = None
+
+        self.__parse_ID()
         self.__parse_shape()
 
-    def __parse_shape(self):
-        if len(self.token) > 0:
-            if self.token[0] in SHAPE_SET:
-                self.shape = self.token[0]
-                self.token = self.token[1:]
 
+
+    def getText(self):
+        return self.text
+
+    def __parse_shape(self):
+        if len(self.text) > 0:
+            if self.text[0] in SHAPE_SET:
+                self.shape = self.text[0]
+                self.text = self.text[1:]
+
+    def __parse_ID(self):
+        if '|' in self.text:
+            splitArr = self.text.split('|')
+            assert len(splitArr) == 2
+            self.ID = splitArr[0]
+            self.text = splitArr[1]
 
     def position(self, width, height):
         ans  = []
 
-        box = Box().addWidth(width).addHeight(height).addText(self.token).addShape(self.shape)
+        box = Box().addWidth(width).addHeight(height).addText(self.text).addShape(self.shape).addID(self.ID)
         ans.append(box)
 
         return ans
     def __repr__(self):
-        return self.token
+        return self.text
 
 
 
@@ -129,22 +149,28 @@ class GraphAST():
     def __init__(self, type = None):
         self.type = type
         self.childs = []
-
+        self.transitionNodeList = []
     def get_type(self):
-        return self.type.token
+        return self.type.getText()
 
     def add (self, child):
         self.childs.append(child)
 
+    def addTransitionNoe(self, transitionNode):
+        self.transitionNodeList.append(transitionNode)
+
+        return self
     def postionAndTranstion(self):
         positionList = self.position()
-        transitionList = []
+        transitionNodeList = []
 
         for i , child in enumerate(self.childs):
             trans = child.transition()
-            transitionList.extend(trans)
+            ## the children may have implicit transition
+            transitionNodeList.extend(trans)
 
-        return (positionList, transitionList)
+        transitionNodeList.extend(self.transitionNodeList)
+        return (positionList, transitionNodeList)
 
     def position(self):
         positionList = []
@@ -196,7 +222,7 @@ class MulTextParser():
                 mulText.addTransition(TransitionNode())
             else:
                 text = self.text.parse(lex)
-                mulText.addTransition(TransitionNode(text.token))
+                mulText.addTransition(TransitionNode(text.getText()))
                 token1 = lex.nextToken()
                 assert token1.value == "-"
             text1 = self.text.parse(lex)
@@ -205,11 +231,34 @@ class MulTextParser():
 
         return mulText
 
+class TransitionArrowParser():
+
+    def __init__(self, textParser):
+        self.textParser = textParser
+
+
+    def parse(self, lex):
+        token1 = lex.nextToken()
+        assert token1.value == "-"
+        token1 = lex.peak()
+
+        if token1 == '-':
+            token1 = lex.nextToken()
+            assert token1.getText() =='-'
+            return TransitionNode()
+        else:
+            arrowText = self.textParser.parse()
+            token1 = lex.nextToken()
+            assert token1.getText() == '-'
+
+            return TransitionNode(arrowText)
+
 
 class GraphParser():
-    def __init__(self , multext, text):
+    def __init__(self , multext, text, transitonArrowParser):
         self.multext = multext
         self.text = text
+        self.transitionArrowParser =  transitonArrowParser
 
     def get_type(self):
         return self.text.token
@@ -225,13 +274,37 @@ class GraphParser():
         multext = self.multext.parse(lex)
 
         graph.add(multext)
-        while lex.peak() != None:
+        while lex.peak() != None and lex.peak().value != 'type':
             newline = lex.nextToken()
             assert newline.value == "\n"
 
             multext = self.multext.parse(lex)
 
             graph.add(multext)
+
+        if lex.peak() == None:
+            return graph
+
+        ## parse transition
+        token = lex.nextToken()
+        assert token.value == "type"
+        token = lex.nextToken()
+        assert  token.value == "transition"
+
+        while lex.peak()!= None:
+            ## this must be ID right now
+            source = lex.nextToken()
+            transitionNode = self.transitionArrowParser.parse(lex)
+
+            target = lex.nextToken()
+
+            transitionNode.setSourceID(source.getText()).setTargetID(target.getText())
+
+            if lex.peak() == "\n":
+                lex.nextToken()
+
+            graph.addTransitionNoe(transitionNode)
+
         return graph
 
 
@@ -239,10 +312,11 @@ def parse( input):
     lexx = Lexer()
     lexx.run(input)
 
-    text = TextParser()
-    mulTextParser = MulTextParser(text)
+    textParser = TextParser()
+    mulTextParser = MulTextParser(textParser)
+    arrowParser = TransitionArrowParser(textParser)
 
-    graph = GraphParser(mulTextParser, text)
+    graph = GraphParser(mulTextParser, textParser, arrowParser)
 
     while lexx.hasNext():
         tree = graph.parse(lexx)
