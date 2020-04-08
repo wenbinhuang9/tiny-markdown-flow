@@ -54,8 +54,8 @@ class MyTestCase(unittest.TestCase):
     def test_draw_multi_level_lr_circle(self):
         input = "type LR .1 -10- .2 \n .3 -20- .4"
 
-        file = "test_draw_lr_circle.jpg"
-        correct_file ="test_draw_lr_circle_correct.jpg"
+        file = "test_draw_multi_level_lr_circle.jpg"
+        correct_file ="test_draw_multi_level_lr_circle.jpg"
         interpret(input, file)
 
     def test_syntax_with_transition(self):

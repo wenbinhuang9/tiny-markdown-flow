@@ -1,5 +1,5 @@
 from layout import  getLayout
-from drawer import  startDraw, createImage, save
+from drawer import  drawBox, createImage, save
 from parser import parse
 from transition import TransitionManager
 
@@ -27,7 +27,7 @@ def interpret(input, file = None):
 
 
     for layout in layoutList:
-        startDraw(layout, draw)
+        drawBox(layout, draw)
 
     transitionMangeer.drawTrans(draw)
 

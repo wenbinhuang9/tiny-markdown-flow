@@ -87,7 +87,6 @@ class LRLayout():
         self.char_place = 8
         self.level_interval = 50
         self.pos = self.position()
-        self.transitions = self.gettransition()
 
 
 
@@ -100,11 +99,6 @@ class LRLayout():
         elif self.boxList[0].shape == RECTANGLE:
             return self.calPosition()
 
-    def gettransition(self):
-        if self.boxList[0].shape == CIRCLE:
-            return self.circleTransition()
-        elif self.boxList[0].shape == RECTANGLE:
-            return self.calTransitionPos()
 
     def calPosition(self):
         ans = []
@@ -157,37 +151,6 @@ class LRLayout():
         self.height = self.x0 + h * self.height_interval + 50
         return ans
 
-    def circleTransition(self):
-        circleList = self.pos
-
-        if len(circleList) == 0:
-            return None
-        ans = []
-        pre = circleList[0]
-        for i in range(1, len(circleList)):
-            cur = circleList[i]
-            transNode = self.transitionMap.get((pre.ID, cur.ID))
-            trans = cur.getTransition(pre, cur, transNode)
-            ans.append(trans)
-
-        return ans
-
-    def calTransitionPos(self):
-
-        if len(self.pos) == 0:
-            return None
-
-        previsouRec = self.pos[0]
-
-        ans = []
-        for i in range(1, len(self.pos)):
-            curRec = self.pos[i]
-
-            trans = curRec.getTransition(previsouRec, curRec, None)
-            ans.append(trans)
-            previsouRec  = curRec
-        return ans
-
 
 
 """
@@ -215,8 +178,7 @@ class TopdownLayout():
         self.max_len = self.getMaxTextLen()
 
         self.pos = self.calPosition()
-        self.transitions = self.calTransitionPos()
-
+        
 
     def getMaxTextLen(self):
         maxx = 0
@@ -252,25 +214,5 @@ class TopdownLayout():
         self.width = right_bottom_x + self.x0
         self.height = temp_left_up_y + self.y0
 
-        return ans
-
-
-    def calTransitionPos(self):
-        if len(self.pos ) == 0:
-            return None
-
-        previsouRec = self.pos[0]
-
-        ans = []
-        for i in range(1, len(self.pos)):
-            curRec = self.pos[i]
-
-            x1 = previsouRec.left_up_x + (previsouRec.bottom_right_x - previsouRec.left_up_x) /2
-            y1 = previsouRec.bottom_right_y
-            x2 = curRec.left_up_x + (curRec.bottom_right_x - curRec.left_up_x) /2
-            y2 = curRec.left_up_y
-
-            ans.append(Transition(x1, y1, x2, y2))
-            previsouRec  = curRec
         return ans
 

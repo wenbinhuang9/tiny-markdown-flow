@@ -11,10 +11,7 @@ from layout import LRLayout, TopdownLayout
 """
 new_roman_font = ImageFont.truetype("./times-new-roman.ttf", 20)
 
-
-
-
-def startDraw(layout, draw):
+def drawBox(layout, draw):
     if isinstance(layout, LRLayout):
         drawLRLayout(layout, draw)
     elif isinstance(layout, TopdownLayout):
@@ -62,7 +59,6 @@ def drawLRLayout(lrLayout, draw):
         else:
             drawRectangle(draw, rec)
 
-    drawTransitions(draw, lrLayout.transitions)
 
 def drawTransitions(draw, transitionList):
     for tran in transitionList:
@@ -73,7 +69,6 @@ def drawTdLayout(topdownLayout, draw):
     for rec in topdownLayout.pos:
         drawRectangle(draw, rec)
 
-    drawTransitions(draw,topdownLayout.transitions )
 
 def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)
