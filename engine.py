@@ -3,7 +3,12 @@ from drawer import  drawBox, createImage, save
 from parser import parse
 from transition import TransitionManager
 
+## todo layout responsible for giving logical height and width
+
 ## todo I have benn confused by transition  and transNode, refactor right now
+## todo logicWidth and logicHeight, PhicyalWidth and physical height, these two should be sperated, and physical only depends on logicl
+## todo  two cycles , can adjust arrow position in circles automatically by arrow directions.
+## todo adding shape object to Box, box responsibel for rerender physical position
 def interpret(input, file = None):
     tree = parse(input)
 
