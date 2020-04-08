@@ -74,9 +74,6 @@ def drawTdLayout(topdownLayout, draw):
         drawRectangle(draw, rec)
 
     drawTransitions(draw,topdownLayout.transitions )
-   # for tran in topdownLayout.transitions:
-    #    x1, y1, x2, y2 = tran.x1, tran.y1, tran.x2, tran.y2
-     #   __draw_new_top_down_arrow(draw, x1, y1, x2, y2 )
 
 def __draw_new_top_down_arrow( draw, x1, y1, x2, y2):
     draw.line((x1, y1, x2, y2), fill=(0, 0, 0), width=1)

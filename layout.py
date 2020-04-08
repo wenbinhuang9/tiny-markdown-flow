@@ -1,25 +1,45 @@
 from parser import CIRCLE, RECTANGLE
 
 ## todo support mixture shapes
+
 class Rectangle():
-    def __init__(self, x1, y1, x2, y2, text ):
+    def __init__(self, x1, y1, x2, y2, text, box):
         self.left_up_x = x1
         self.left_up_y = y1
         self.bottom_right_x = x2
         self.bottom_right_y = y2
         self.text = text
         self.text_pos = None
+        self.box = box
+
+    def getID(self):
+        return self.box.ID
+
+
+    def getTransition(self, pre, cur, transNode):
+        x1 = pre.bottom_right_x
+        y1 = pre.left_up_y + (pre.bottom_right_y - pre.left_up_y) / 2
+        x2 = cur.left_up_x
+        y2 = cur.left_up_y + (cur.bottom_right_y - cur.left_up_y) / 2
+
+        return Transition(x1, y1, x2, y2)
 
     def points(self):
         return [self.left_up_x, self.left_up_y, self.bottom_right_x, self.bottom_right_y]
 
 class Circle():
-    def __init__(self, x1, y1, r, text = "", ID=""):
+    def __init__(self, x1, y1, r, text = "", ID="", box = None,):
         self.x1 = x1
         self.y1 = y1
         self.r = r
         self.text = text
         self.ID = ID
+        self.box = box
+    def getTransition(self, pre, cur, transNode):
+        return Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1, transNode.text)
+    def getID(self):
+        return self.box.ID
+
     def points(self):
         return [self.x1, self.y1, self.r]
 
@@ -106,7 +126,7 @@ class LRLayout():
 
             right_bottom_y = left_top_y + self.height
             max_bottom_y = right_bottom_y
-            rec = Rectangle(left_top_x, left_top_y, right_bottom_x, right_bottom_y, text)
+            rec = Rectangle(left_top_x, left_top_y, right_bottom_x, right_bottom_y, text, box)
             ans.append(rec)
 
             text_y = left_top_y + self.padding
@@ -135,7 +155,7 @@ class LRLayout():
 
             x = accumulative_x + self.box_place + 10 + radius
             accumulative_x = x
-            ans.append(Circle(x, y, radius, text, ID = ID))
+            ans.append(Circle(x, y, radius, text, ID = ID, box = box))
 
         self.width = accumulative_x +  100
         self.height = self.x0 + h * self.height_interval + 50
@@ -151,7 +171,8 @@ class LRLayout():
         for i in range(1, len(circleList)):
             cur = circleList[i]
             transNode = self.transitionMap.get((pre.ID, cur.ID))
-            ans.append(Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1, transNode.text))
+            trans = cur.getTransition(pre, cur, transNode)
+            ans.append(trans)
 
         return ans
 
@@ -166,12 +187,8 @@ class LRLayout():
         for i in range(1, len(self.pos)):
             curRec = self.pos[i]
 
-            x1 = previsouRec.bottom_right_x
-            y1 = previsouRec.left_up_y + (previsouRec.bottom_right_y - previsouRec.left_up_y) / 2
-            x2 = curRec.left_up_x
-            y2 = curRec.left_up_y + (curRec.bottom_right_y - curRec.left_up_y) /2
-
-            ans.append(Transition(x1, y1, x2, y2))
+            trans = curRec.getTransition(previsouRec, curRec, None)
+            ans.append(trans)
             previsouRec  = curRec
         return ans
 
@@ -226,7 +243,7 @@ class TopdownLayout():
 
             temp_left_up_y += self.box_place
 
-            rec = Rectangle(left_up_x, left_up_y, right_bottom_x, right_bottom_y, text)
+            rec = Rectangle(left_up_x, left_up_y, right_bottom_x, right_bottom_y, text, box )
             ans.append(rec)
 
             text_y = left_up_y + self.padding
