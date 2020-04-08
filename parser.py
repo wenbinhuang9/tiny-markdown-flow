@@ -242,14 +242,14 @@ class TransitionArrowParser():
         assert token1.value == "-"
         token1 = lex.peak()
 
-        if token1 == '-':
+        if token1.value == '-':
             token1 = lex.nextToken()
-            assert token1.getText() =='-'
+            assert token1.value =='-'
             return TransitionNode()
         else:
-            arrowText = self.textParser.parse()
+            arrowText = self.textParser.parse(lex)
             token1 = lex.nextToken()
-            assert token1.getText() == '-'
+            assert token1.value == '-'
 
             return TransitionNode(arrowText)
 
@@ -278,6 +278,9 @@ class GraphParser():
             newline = lex.nextToken()
             assert newline.value == "\n"
 
+            ## go to transition parse
+            if lex.peak().value == "type":
+                break
             multext = self.multext.parse(lex)
 
             graph.add(multext)

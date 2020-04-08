@@ -11,6 +11,8 @@ class Token():
         self.type = type
         self.value = value
 
+    def getText(self):
+        return self.value
     def __repr__(self):
         return "type={0},value={1}".format(self.type, self.value)
     def __str__(self):

@@ -19,9 +19,24 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_transition_in_parser(self):
-        input = "type LR 'abc def' -- def -- dfa \n type transition "
+        input = "type LR '1|abc def' -- 2|def -- 3|dfa \n type transition 1--2 2--3"
+
+        tree = parse(input)
+
+        correctAns = {("1", "2"): "", ("2", "3"):""}
+        for transNode in tree.transitionNodeList:
+            self.assertEqual(correctAns[transNode.sourceID, transNode.targetID] == transNode.text, True)
 
 
+    def test_twolint_transition_in_parser(self):
+        input = "type LR '1|abc def' -- 2|def -- 3|dfa \n 4|aff -- 5|fadf  \n type transition 1--4 2--5"
+
+        tree = parse(input)
+
+
+        correctAns = {("1", "4"): "", ("2", "5"): ""}
+        for transNode in tree.transitionNodeList:
+            self.assertEqual(correctAns[transNode.sourceID, transNode.targetID] == transNode.text, True)
 
 
 if __name__ == '__main__':
