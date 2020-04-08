@@ -50,5 +50,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(filecmp.cmp(file, correct_file), True)
 
 
+    def test_draw_multi_level_lr_circle(self):
+        input = "type LR .1 -10- .2 \n .3 -20- .4"
+
+        file = "test_draw_lr_circle.jpg"
+        correct_file ="test_draw_lr_circle_correct.jpg"
+        interpret(input, file)
+
 if __name__ == '__main__':
     unittest.main()

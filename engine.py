@@ -3,6 +3,8 @@ from layout import   getLayout
 from drawer import  startDraw, createImage, save
 from parser import parse
 
+## todo  plan for the syntax
+## todo layout code optimization
 def interpret(input, file = None):
 
     tree = parse(input)

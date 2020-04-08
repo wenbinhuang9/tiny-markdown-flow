@@ -1,4 +1,5 @@
 from parser import CIRCLE, RECTANGLE
+
 ## todo support mixture shapes
 class Rectangle():
     def __init__(self, x1, y1, x2, y2, text ):
@@ -61,7 +62,7 @@ class LRLayout():
         self.transitionMap = self.calTransitionMap(transitionList)
         self.width = self.boxList[-1].width
         self.height = self.boxList[-1].height
-
+        self.height_interval   = 80
         self.x0 = 50
         self.y0 = 50
         self.padding = 10
@@ -71,6 +72,8 @@ class LRLayout():
         self.level_interval = 50
         self.pos = self.position()
         self.transitions = self.gettransition()
+
+
 
     def calTransitionMap(self, transtionList):
         return { (trans.sourceID, trans.targetID):trans for trans in transtionList}
@@ -127,14 +130,15 @@ class LRLayout():
         for box in self.boxList:
             w,h, text, shape, ID = box.width, box.height, box.text, box.shape, box.ID
 
-            y = self.y0 + h * self.height
             radius = max(30, len(text) * self.char_place/2 + 10)
+            y = self.y0 + h * self.height_interval
+
             x = accumulative_x + self.box_place + 10 + radius
             accumulative_x = x
             ans.append(Circle(x, y, radius, text, ID = ID))
 
         self.width = accumulative_x +  100
-        self.height = self.x0 + h * self.height + 50
+        self.height = self.x0 + h * self.height_interval + 50
         return ans
 
     def circleTransition(self):
