@@ -70,7 +70,7 @@ def drawTransitions(draw, transitionList):
         __draw_new_right_arrow(draw, x1, y1, x2, y2, text)
 
 def drawTdLayout(topdownLayout, draw):
-    for rec in topdownLayout.rectangles:
+    for rec in topdownLayout.pos:
         drawRectangle(draw, rec)
 
     drawTransitions(draw,topdownLayout.transitions )

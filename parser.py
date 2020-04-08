@@ -62,6 +62,11 @@ class TransitionNode():
 
         return self
 
+    def getText(self):
+        if isinstance( self.text, str):
+            return self.text
+        return self.text.getText()
+
 
 INTERVAL_LEN = 5
 RECTANGLE = "#"

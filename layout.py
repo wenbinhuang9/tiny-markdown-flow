@@ -36,7 +36,8 @@ class Circle():
         self.ID = ID
         self.box = box
     def getTransition(self, pre, cur, transNode):
-        return Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1, transNode.text)
+        text = "" if transNode == None else transNode.getText()
+        return Transition(pre.x1 + pre.r, pre.y1, cur.x1 - cur.r, cur.y1, text)
     def getID(self):
         return self.box.ID
 
@@ -62,11 +63,6 @@ def getLayout(graphType, pos, tran):
     return None
 
 
-class TopdownLayout():
-    def __init__(self, graph):
-        self.type = graph.get_type()
-        self.graph = graph
-        self.lrLayout = LRLayout(graph)
 
 
 
@@ -197,6 +193,9 @@ class LRLayout():
 """
 Top to down linear layout 
 """
+
+
+
 class TopdownLayout():
     def __init__(self, boxList, transitionList):
         self.transitionList = transitionList
@@ -215,7 +214,7 @@ class TopdownLayout():
         self.char_place = 10
         self.max_len = self.getMaxTextLen()
 
-        self.rectangles = self.calPosition()
+        self.pos = self.calPosition()
         self.transitions = self.calTransitionPos()
 
 
@@ -257,14 +256,14 @@ class TopdownLayout():
 
 
     def calTransitionPos(self):
-        if len(self.rectangles) == 0:
+        if len(self.pos ) == 0:
             return None
 
-        previsouRec = self.rectangles[0]
+        previsouRec = self.pos[0]
 
         ans = []
-        for i in range(1, len(self.rectangles)):
-            curRec = self.rectangles[i]
+        for i in range(1, len(self.pos)):
+            curRec = self.pos[i]
 
             x1 = previsouRec.left_up_x + (previsouRec.bottom_right_x - previsouRec.left_up_x) /2
             y1 = previsouRec.bottom_right_y
