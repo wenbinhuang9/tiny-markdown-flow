@@ -57,5 +57,13 @@ class MyTestCase(unittest.TestCase):
         correct_file ="test_draw_lr_circle_correct.jpg"
         interpret(input, file)
 
+    def test_syntax_with_transition(self):
+        input = "type LR 1|.1 -10- 2|.2 \n 3|.3 -20- 4|.4 " \
+                "\n type transition 1--3 2--4"
+
+        file = "test_syntax_with_transition.jpg"
+        correct_file ="test_syntax_with_transition_correct.jpg"
+        interpret(input, file)
+
 if __name__ == '__main__':
     unittest.main()

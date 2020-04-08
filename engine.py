@@ -3,8 +3,7 @@ from layout import   getLayout
 from drawer import  startDraw, createImage, save
 from parser import parse
 
-## todo  plan for the syntax
-## todo layout code optimization
+
 def interpret(input, file = None):
 
     tree = parse(input)
@@ -12,12 +11,13 @@ def interpret(input, file = None):
     positionList , transitionList= tree.postionAndTranstion()
     layoutList = []
 
+    ## todo optimize here
     for pos in positionList:
         graphType = tree.get_type()
         layout = getLayout(graphType, pos, transitionList)
         layoutList.append(layout)
 
-    ## here has a porblem
+    ## here has a porblem, todo  how to calculate the whole frame work width and height beautifully
     maxwidth =  max([ layout.width for layout in layoutList])
     maxheight = max([ layout.height for layout in layoutList])
 
